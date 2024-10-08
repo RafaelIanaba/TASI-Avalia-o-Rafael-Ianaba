@@ -22,7 +22,6 @@ export default function Marvel() {
 
         await axios.get(url).then( retorno => {
             setDados(retorno.data.data.results)
-            console.log(dados)
         })
     }
   

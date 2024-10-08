@@ -62,7 +62,7 @@ export default function App() {
       setAuthentication(true)
       navigate('/marvel')
     } else {
-      console.log('USUARIO OU SENHA INVÁLIDOS')
+      alert("USUARIO OU SENHA INVÁLIDOS")
     }
   }
 
