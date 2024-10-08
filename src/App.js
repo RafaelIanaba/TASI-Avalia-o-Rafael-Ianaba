@@ -1,87 +1,96 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import axios from 'axios'
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import Marvel from './Marvel';
 
-export default function App() {
-  var [ lista, setLista ] = React.useState([])
-  var [ episodios, setEpisodios ] = React.useState({})
 
-  const buscarDados = async () => {
-    var urlPersonagens = "https://rickandmortyapi.com/api/character"
-    var urlEpisodios = "https://rickandmortyapi.com/api/episode"
+const Login = ({ callback }) => {
+  const [usuario, setUsuario] = useState('')
+  const [senha, setSenha] = useState('')
+  const navigate = useNavigate()
 
-    await axios.get(urlPersonagens).then( retorno => {
-      var dadosPersonagens  = retorno.data.results 
-      setLista(dadosPersonagens)
-    })
-    
-    await axios.get(urlEpisodios).then( retorno => {
-      var dadosEpisodios = retorno.data.results
-      const episodiosMap = {};
-        dadosEpisodios.forEach(episodio => {
-        episodiosMap[episodio.url] = episodio.name;
-      }) 
-      setEpisodios(episodiosMap);
-    })
+  const realizarLogin = async () => {
+    const dados = {
+      usuario: usuario,
+      senha: senha,
+    }
+    callback(dados, navigate)
   }
 
-  const novo_html = lista.map( (item,key) => {
-    const episodioNome = episodios[item.episode[0]]
-    const corPonto = item.status === "Dead" ? "#ff0000" : item.status === "unknown" ? "#0000FF" : "#55d41d"
-    const ponto = (
-      <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(2.0)' }} style={{ color: corPonto }}>
-        •
-      </Box>
-    );
-    
-    return (
-      <Card key={ key } style={ { "width":"400px", "backgroundColor":"#4c4c4c", "borderRadius":"10px", "marginBottom":"10px", "marginTop":"10px" } }>
-        <CardActionArea>
-          <CardMedia component="img" src={ item.image } style={ { "height":"250px" } }/>
-
-          <CardContent>
-            <Typography  variant="h5" component="div" style={ { "color":"white", "padding":"0px" } }>
-              { item.name }
-            </Typography>
-
-            <Typography variant="body2" style={ { "color":"white" } }>
-              {ponto} {item.status} - {item.species}
-            </Typography>
-            <br/>
-
-            <Typography variant="body2" style={ { "color":"#a1a1a1" } }>
-              Last Known location:
-            </Typography>
-
-            <Typography variant="body2" style={ { "color":"white" } }>
-              {item.location.name}
-            </Typography>
-            <br/>
-
-            <Typography variant="body2" style={ { "color":"#a1a1a1" } }>
-              First seen in:
-            </Typography>
-
-            <Typography variant="body2" style={ { "color":"white" } } >
-              {episodioNome}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    );
-  })
-
-  return(
-    <div>
-      <button onClick={ () => buscarDados() }>
-        BUSCAR
-      </button>
-      { novo_html }
+  return (
+    <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div style={{ width: '300px', backgroundColor: '#4c4c4c', borderRadius: '10px', padding: '20px', margin: '10px', textAlign: 'center' }}>
+        <div style={{ color: 'white', display: 'flex', justifyContent: 'center' }}>Digite o Usuário:</div>
+        <input
+          type="text"
+          className="Usuario"
+          name="usuario"
+          style={{ backgroundColor: '#85b7b5', width: '80%', padding: '8px', marginBottom: '10px', alignItems: 'center' }}
+          onChange={(e) => setUsuario(e.target.value)}
+        />
+        <br />
+        <div style={{ color: 'white', display: 'flex', justifyContent: 'center' }}>Digite a Senha:</div>
+        <input
+          type="password"
+          className="Senha"
+          name="senha"
+          style={{ backgroundColor: '#85b7b5', width: '80%', padding: '8px', marginBottom: '10px', alignItems: 'center' }}
+          onChange={(e) => setSenha(e.target.value)}
+        />
+        <br />
+        <input
+          type="button"
+          value="EFETUAR LOGIN"
+          style={{ backgroundColor: 'gray', width: '50%', padding: '10px', justifyContent: 'center' }}
+          onClick={realizarLogin}
+        />
+      </div>
     </div>
+  )
+}
+
+const RotasPrivadas = () => {
+  const auth = localStorage.getItem('MEU_TOKEN')
+  return auth == 'true' ? <Outlet /> : <Navigate to="/" />
+}
+
+export default function App() {
+  const [authentication, setAuthentication] = useState(false)
+
+  const EfetuaLogin = (dados, navigate) => {
+    if (dados.usuario == '010621016' && dados.senha == '010621016') {
+      localStorage.setItem('MEU_TOKEN', 'true')
+      setAuthentication(true)
+      navigate('/marvel')
+    } else {
+      console.log('USUARIO OU SENHA INVÁLIDOS')
+    }
+  }
+
+  const Deslogar = () => {
+    localStorage.removeItem('MEU_TOKEN')
+    setAuthentication(false)
+  }
+
+  const VerificaLogin = () => {
+    const auth = localStorage.getItem('MEU_TOKEN')
+    setAuthentication(auth == 'true')
+  }
+
+  useEffect(() => {
+    VerificaLogin()
+  }, [])
+
+  return (
+    <BrowserRouter>
+      <nav>
+        {authentication && <button onClick={Deslogar}>Logout</button>}
+      </nav>
+      <Routes>
+        <Route path="/" element={<Login callback={EfetuaLogin} />} />
+        <Route element={<RotasPrivadas />}>
+          <Route path="/marvel" element={<Marvel />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
