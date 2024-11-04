@@ -90,11 +90,11 @@ export default function LisProduto() {
                             <img src={produto.imagem} style={{ width: '100%', height: '100%', borderTopLeftRadius: '25px', borderTopRightRadius: '25px' }}/>
                         </div>
                         <div style={{ padding: '10px' }}>
-                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>ID: {produto._id}</h6>
-                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>NOME: {produto.nome}</h6>
-                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px' }}>QUANTIDADE: {produto.quantidade}</h6>
+                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>ID: {produto._id}.</h6>
+                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>NOME: {produto.nome}.</h6>
+                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px' }}>QUANTIDADE: {produto.quantidade}.</h6>
                             <h6 style={{ fontSize: '15px', color: 'white', margin: '15px' }}>PREÇO: R$ {produto.preco}</h6>
-                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>DESCRIÇÃO: {produto.descricao}</h6>
+                            <h6 style={{ fontSize: '15px', color: 'white', margin: '15px', wordWrap: 'break-word', whiteSpace: 'normal' }}>DESCRIÇÃO: {produto.descricao}.</h6>
                         </div>
                     </div>
                 ))}
